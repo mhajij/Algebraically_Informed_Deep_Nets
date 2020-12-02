@@ -23,7 +23,7 @@ To train a rep for one of the above group you can simply run :
 ```ruby
 main.py -m training -st group_name -dim 4
 ```
-where group_name is braid_group, ZxZ or symmetric_group. Dimension of the disred network should also be specified. Note that the choice of the activation is crucial to determine the type of the representation : linear, affine or non-linear. This argument is optional and it can be customzed using --network_generator_activation.
+where group_name is braid_group, ZxZ or symmetric_group. Dimension of the disred network should also be specified. Note that the choice of the activation is crucial to determine the type of the representation : linear, affine or non-linear. This argument is optional and it can be customized using --network_generator_activation.
 
 
 We have also implemented AIDN to compute reprereation for the Temperley-lieb Algebras.
