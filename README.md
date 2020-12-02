@@ -5,6 +5,9 @@ AIDN is a deep learning algorithm to represent any finitely-presented algebraic 
 
 Aidn can compute linear and non-linear representations of most finitely-presented algebraic structures such as groups, associative algebras, and Lie algebras.
 
+More details are available here : https://www.researchgate.net/publication/346563873_Algebraically-Informed_Deep_Networks_AIDN_A_Deep_Learning_Approach_to_Represent_Algebraic_Structures
+
+
 We illusrate AIDN on computing a braid group rep of dimension 2.
 
 To train a braid group representation using AIDN, we start by creating two generator neural networks  f,g :R^2 -> R^2. To train f,g we create an auxiliary neural network for the relations of the braid group. These relations are constrains that the networks f and g must satisfy. We impose these constrains by setting them to a cost function which is then minimized using SGD.
