@@ -175,7 +175,7 @@ def TL_algebra_net(Ugen,delta=2,input_dim=2):
 
     outs_side1_equation_3=Ugen(out_gen)
        
-    outs_side2_equation_3 = Lambda(lambda x: x * delta)(Concatenate()([input_tensor_1,input_tensor_2]))
+    outs_side2_equation_3 =Lambda(lambda x: x * delta) (  Ugen(Concatenate()([input_tensor_1,input_tensor_2])))
 
     
     final_out123=Concatenate()([Concatenate()(outs_side1_equation_1),Concatenate()(outs_side2_equation_1),
