@@ -9,6 +9,7 @@ import Temperley_Lieb_algebra_rep_network as tlnet
 import braid_group_rep_network as bgnet
 import symmetric_group_rep_network as symgnet
 import ZxZ_group_rep_network as ZSnet
+import utilities as ut
 
 import math
 import numpy as np
@@ -19,6 +20,12 @@ import argparse
 import numpy as np
 import os.path
 import os
+
+def model_string_gen(model_name):
+    
+    name=model_name+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+    
+    return name
     
 weight_folder='weights/'   
  
@@ -39,11 +46,9 @@ if __name__ == '__main__':
     # type of structure, options : TL, braid_group, symmetric_group, ZxZ
 
     parser.add_argument('-st', '--structure',type=str,default="TL",required=True,help='Which structure you want to train. Options are : "TL" , "braid_group", "ZxZ_group" and "symmetric_group". Any other option will generate an error.')
-
-
-
-
-    #network arguments
+    
+    
+    #type, dim of network arguments : linear, affine, nonlinear. Activation determines the type.
     
     #(1) dim of the rep
     parser.add_argument('-dim', '--generator_dimension',type=int,default=2,help='domain dimension of the gen network.')
@@ -56,7 +61,8 @@ if __name__ == '__main__':
     
     parser.add_argument('-bias', '--bias',type=str,default=False,required=False, help='Use bias in your network.')
    
-    #(4) determines delta for the TL algebra. Not effective when training a group.
+    # TL algebra argument : delta.
+    #* determines delta for the TL algebra. Not effective when training a group.
     
     
     parser.add_argument('-delta', '--delta',type=float,required=False,default=1,help='delta, the TL parameter.')
@@ -78,17 +84,23 @@ if __name__ == '__main__':
 
     #___________________________________________________________
 
-    #parser.add_argument('-t', '--testing',type=bool,default=False,help='Test the relations on the trained network and print out the result to screen.')
-    #parser.add_argument('-f', '--network_file',type=str,default=False,help='which network you want to load.')   
-    #parser.add_argument('-s', '--source_folder',type=str,required=False,help='The folder where the set of training data is located.')
-
-    
 
 
 
     args = parser.parse_args()
     
+    if args.generator_dimension in [2,4,6]:
+        
+        d=args.generator_dimension//2
+
+        data1=np.load(data_folder+str(d)+'d_data_1.npy')
+        data2=np.load(data_folder+str(d)+'d_data_2.npy')
+        data3=np.load(data_folder+str(d)+'d_data_3.npy')
+         
+    else:
     
+        raise ValueError("dimensions are constrained to 2 , 4 or 6")
+
     
     if args.mode=='training':
         
@@ -97,31 +109,6 @@ if __name__ == '__main__':
         
         
         if args.structure=='TL':
-            
-            if args.generator_dimension==2:
-                
-                
-                data1=np.load(data_folder+'1d_data_1.npy')
-                data2=np.load(data_folder+'1d_data_2.npy')
-                data3=np.load(data_folder+'1d_data_3.npy')
-
-            elif args.generator_dimension==4:
-                
-                
-                data1=np.load(data_folder+'2d_data_1.npy')
-                data2=np.load(data_folder+'2d_data_2.npy')
-                data3=np.load(data_folder+'2d_data_3.npy')   
-            elif args.generator_dimension==6:
-                
-                
-                data1=np.load(data_folder+'3d_data_1.npy')
-                data2=np.load(data_folder+'3d_data_2.npy')
-                data3=np.load(data_folder+'3d_data_3.npy')                   
-            
-            else:
-                
-                raise ValueError("dimensions are constrained to 2 , 4 or 6")
-                
                 
                 
             if args.delta==0:
@@ -138,32 +125,24 @@ if __name__ == '__main__':
             
             Ugen=tlnet.U_generator(dim=args.generator_dimension,bias= args.bias, activation_function=args.network_generator_activation)
             
-            
-            
-    
+
             M=tlnet.TL_algebra_net(Ugen,delta =args.delta  ,input_dim=dim//2)
             
             
-            model_name="TL_algebra_relations_trainer_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+            model_name=model_string_gen("TL_algebra_relations_trainer_use_bias=")
+            
   
             
             checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
-            
             callbacks_list = [checkpoint]
     
             
-    
-    
-            M.compile(optimizer=keras.optimizers.Adam(lr=args.learning_rate), loss = tlnet.TL_loss_wrapper(dim//2))
-            M.fit([data1,data2,data3], y=data1,
-                      batch_size=args.batch_size,
-                      epochs=args.epoch,
-                      shuffle = True,
-                      verbose=1,callbacks=callbacks_list)  
+            ut.train_net(M,[data1,data2,data3],data1,tlnet.TL_loss_wrapper(dim//2),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
+
+
             print("saving the model.." )
 
-
-            model_name_U_gen="TL_algebra_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+            model_name_U_gen=model_string_gen("TL_algebra_generator_use_bias=")
 
             
             Ugen.save(model_name_U_gen) 
@@ -172,31 +151,7 @@ if __name__ == '__main__':
             print("model saved.")
             
         elif args.structure=='braid_group': 
-
-            if args.generator_dimension==2:
-                
-           
-                data1=np.load(data_folder+'1d_data_1.npy')
-                data2=np.load(data_folder+'1d_data_2.npy')
-                data3=np.load(data_folder+'1d_data_3.npy')
-
-            elif args.generator_dimension==4:
-                
-                
-                data1=np.load(data_folder+'2d_data_1.npy')
-                data2=np.load(data_folder+'2d_data_2.npy')
-                data3=np.load(data_folder+'2d_data_3.npy')   
-            elif args.generator_dimension==6:
-                
-                
-                data1=np.load(data_folder+'3d_data_1.npy')
-                data2=np.load(data_folder+'3d_data_2.npy')
-                data3=np.load(data_folder+'3d_data_3.npy')  
-                 
-            else:
-   
-                
-                raise ValueError("dimensions are constrained to 2 , 4 or 6")
+            
                           
             
             print("training the braid group generators")
@@ -212,9 +167,9 @@ if __name__ == '__main__':
             
             M=bgnet.braid_group_rep_net(R_oP1,R_oP2,input_shape=dim//2)
 
-            model_name1="braid_group_sigma_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
-            model_name2="braid_group_sigma_inverse_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
-            model_name3="braid_group_relations_trainer_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+            model_name1=model_string_gen("braid_group_sigma_generator_use_bias=")
+            model_name2=model_string_gen("braid_group_sigma_inverse_generator_use_bias=")
+            model_name3=model_string_gen("braid_group_relations_trainer_use_bias=")
 
             """
             if os.path.exists(model_name3):
@@ -233,18 +188,11 @@ if __name__ == '__main__':
             
             
             data_out=np.hstack([data1,data2])
+
+            ut.train_net(M,[data1,data2,data3],data_out,bgnet.braid_group_rep_loss(dim//2),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
             
             
-            M.compile(optimizer=keras.optimizers.Adam(lr=args.learning_rate), loss = bgnet.braid_group_rep_loss(dim//2))
-            
-                        
-             
-            callbacks=callbacks_list
-            M.fit([data1,data2,data3], data_out,
-                              batch_size=args.batch_size,
-                              epochs=args.epoch,
-                              shuffle = True,
-                              verbose=1,callbacks=callbacks_list)  
+
             
             #M.save()
             print("saving the models.." )
@@ -280,12 +228,11 @@ if __name__ == '__main__':
             M=ZSnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)
 
 
-            model_name="ZxZ_group_relations_trainer_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+            model_name=model_string_gen("ZxZ_group_relations_trainer_use_bias=")
+            aname=model_string_gen("ZxZ_group_a_generator_use_bias=")
+            bname=model_string_gen("ZxZ_group_b_generator_use_bias=")
 
-            aname="ZxZ_group_a_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
 
-            bname="ZxZ_group_a_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
- 
 
             
             checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
@@ -294,19 +241,10 @@ if __name__ == '__main__':
     
              
             
+            ut.train_net(M,data1,data1,ZSnet.ZxZ_group_rep_loss(dim),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
+
             
             
-            
-            M.compile(optimizer=keras.optimizers.Adam(lr=args.learning_rate), loss = ZSnet.ZxZ_group_rep_loss(dim))
-            
-                        
-             
-            
-            history=M.fit(data1, data1,
-                              batch_size=args.batch_size,
-                              epochs=args.epoch,
-                              shuffle = True,
-                              verbose=1,callbacks=callbacks_list)  
             
 
             print("saving the models.." )
@@ -320,37 +258,11 @@ if __name__ == '__main__':
 
             
         elif args.structure=='symmetric_group': 
-
-            if args.generator_dimension==2:
-                
-                
-                data1=np.load(data_folder+'1d_data_1.npy')
-                data2=np.load(data_folder+'1d_data_2.npy')
-                data3=np.load(data_folder+'1d_data_3.npy')
-
-            elif args.generator_dimension==4:
-                
-                
-                data1=np.load(data_folder+'2d_data_1.npy')
-                data2=np.load(data_folder+'2d_data_2.npy')
-                
-                data3=np.load(data_folder+'2d_data_3.npy')  
-            elif args.generator_dimension==6:
-                
-                
-                data1=np.load(data_folder+'3d_data_1.npy')
-                data2=np.load(data_folder+'3d_data_2.npy')
-                data3=np.load(data_folder+'3d_data_3.npy')                   
-            
-            else:
-                
-                raise ValueError("dimensions are constrained to 2 , 4 or 6")
                           
             print("training the symmetric_group generator")        
 
             dim=args.generator_dimension
-
-            
+         
             R_oP1=symgnet.sigma_operator(args.generator_dimension,activation_function=args.network_generator_activation ,bias=args.bias)
             
             
@@ -358,8 +270,9 @@ if __name__ == '__main__':
             
             M=symgnet.symmetric_group_rep_net(R_oP1,input_shape=dim//2)
 
-            model_name="symmetric_group_relations_trainer_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
-            model_name_generator="symmetric_group_generator_use_bias="+str(args.bias)+"_activation"+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+            model_name=model_string_gen("symmetric_group_relations_trainer_use_bias=")
+            model_name_generator=model_string_gen("symmetric_group_generator_use_bias=")
+
            
             checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
             
@@ -369,18 +282,9 @@ if __name__ == '__main__':
             
             data_out=np.hstack([data1,data2])
             
+            ut.train_net(M,[data1,data2,data3], data_out, symgnet.symmetric_group_rep_loss(dim//2),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
             
-            M.compile(optimizer=keras.optimizers.Adam(lr=args.learning_rate), loss = symgnet.symmetric_group_rep_loss(dim//2))
-            
-            
-            
-             
-            
-            history=M.fit([data1,data2,data3], data_out,
-                              batch_size=args.batch_size,
-                              epochs=args.epoch,
-                              shuffle = True,
-                              verbose=1,callbacks=callbacks_list)  
+ 
             print("saving the model..")
             
             
@@ -399,31 +303,6 @@ if __name__ == '__main__':
     elif args.mode=='testing':
         print("testing the relations..")
         if args.structure=='TL':
-            
-            if args.generator_dimension==2:
-                
-                
-                data1=np.load(data_folder+'1d_data_1.npy')
-                data2=np.load(data_folder+'1d_data_2.npy')
-                data3=np.load(data_folder+'1d_data_3.npy')
-
-            elif args.generator_dimension==4:
-                
-                
-                data1=np.load(data_folder+'2d_data_1.npy')
-                data2=np.load(data_folder+'2d_data_2.npy')
-                data3=np.load(data_folder+'2d_data_3.npy')
-                
-            elif args.generator_dimension==6:
-                
-                
-                data1=np.load(data_folder+'3d_data_1.npy')
-                data2=np.load(data_folder+'3d_data_2.npy')
-                data3=np.load(data_folder+'3d_data_3.npy')               
-            else:
-                
-                raise ValueError("dimensions are constrained to 2 , 4 or 6")
-                
                 
                 
             if args.delta==0:
@@ -440,7 +319,7 @@ if __name__ == '__main__':
             
             M=tlnet.TL_algebra_net(Ugen,delta =args.delta  ,input_dim=dim//2)
 
-            model_name="TL_algebra_relations_trainer_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+            model_name=model_string_gen("TL_algebra_relations_trainer_use_bias=")
 
             
             M.load_weights(weight_folder+model_name)
@@ -464,33 +343,7 @@ if __name__ == '__main__':
         
 
         elif args.structure=='braid_group': 
-
-            if args.generator_dimension==2:
-                
-                
-                data1=np.load(data_folder+'1d_data_1.npy')
-                data2=np.load(data_folder+'1d_data_2.npy')
-                data3=np.load(data_folder+'1d_data_3.npy')
-
-            elif args.generator_dimension==4:
-                
-                
-                data1=np.load(data_folder+'2d_data_1.npy')
-                data2=np.load(data_folder+'2d_data_2.npy')
-                data3=np.load(data_folder+'2d_data_3.npy')   
-
-            elif args.generator_dimension==6:
-                
-                
-                data1=np.load(data_folder+'3d_data_1.npy')
-                data2=np.load(data_folder+'3d_data_2.npy')
-                data3=np.load(data_folder+'3d_data_3.npy')   
-
-            else:
-             
-                raise ValueError("dimensions are constrained to 2 , 4 or 6")
-                          
-            
+          
             print("testing the braid group generators")
 
 
@@ -514,9 +367,9 @@ if __name__ == '__main__':
 
             print("loading the models.." )
 
-            model_name1="braid_group_sigma_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
-            model_name2="braid_group_sigma_inverse_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
-            model_name3="braid_group_relations_trainer_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+            model_name1=model_string_gen("braid_group_sigma_generator_use_bias=")
+            model_name2=model_string_gen("braid_group_sigma_inverse_generator_use_bias=")
+            model_name3=model_string_gen("braid_group_relations_trainer_use_bias=")
 
 
 
@@ -543,29 +396,6 @@ if __name__ == '__main__':
             print(np.linalg.norm(relations_tensor[:,8*d:]-data_out))
             
         elif args.structure=='symmetric_group': 
-
-            if args.generator_dimension==2:
-                
-                
-                data1=np.load(data_folder+'1d_data_1.npy')
-                data2=np.load(data_folder+'1d_data_2.npy')
-                data3=np.load(data_folder+'1d_data_3.npy')
-
-            elif args.generator_dimension==4:
-                
-                
-                data1=np.load(data_folder+'2d_data_1.npy')
-                data2=np.load(data_folder+'2d_data_2.npy')
-                data3=np.load(data_folder+'2d_data_3.npy')   
-            elif args.generator_dimension==6:
-                
-                
-                data1=np.load(data_folder+'3d_data_1.npy')
-                data2=np.load(data_folder+'3d_data_2.npy')
-                data3=np.load(data_folder+'3d_data_3.npy')               
-            else:
-                
-                raise ValueError("dimensions are constrained to 2 , 4 or 6")
                           
 
             dim=args.generator_dimension
@@ -578,8 +408,9 @@ if __name__ == '__main__':
             
             M=symgnet.symmetric_group_rep_net(R_oP1,input_shape=dim//2)
 
-            model_name="symmetric_group_relations_trainer_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
-            model_name_generator="symmetric_group_generator_use_bias="+str(args.bias)+"_activation"+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
+            model_name=model_string_gen("symmetric_group_relations_trainer_use_bias=")
+            model_name_generator=model_string_gen("symmetric_group_generator_use_bias=")
+
              
             R_oP1.load_weights(weight_folder+model_name_generator)
             M.load_weights(weight_folder+model_name)            
@@ -626,14 +457,13 @@ if __name__ == '__main__':
             
             M=ZSnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)
 
-            model_name="ZxZ_group_relations_trainer_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
 
+            model_name=model_string_gen("ZxZ_group_relations_trainer_use_bias=")
+            aname=model_string_gen("ZxZ_group_a_generator_use_bias=")
+            bname=model_string_gen("ZxZ_group_b_generator_use_bias=")
+ 
 
-
-            aname="ZxZ_group_a_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
-
-            bname="ZxZ_group_b_generator_use_bias="+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
-            
+           
             A_oP.load_weights(weight_folder+aname) 
             B_oP.load_weights(weight_folder+bname) 
  
