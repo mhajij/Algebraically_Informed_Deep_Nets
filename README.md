@@ -3,7 +3,7 @@
 AIDN is a deep learning algorithm to represent any finitely-presented algebraic object with a set of deep neural networks.
 
 
-Aidn can compute linear and non-linear representations of most finitely-presented algebraic structures such as groups, associative algebras, and Lie algebras.
+AIDN can compute linear and non-linear representations of most finitely-presented algebraic structures such as groups, associative algebras, and Lie algebras.
 
 More details are available here : https://www.researchgate.net/publication/346563873_Algebraically-Informed_Deep_Networks_AIDN_A_Deep_Learning_Approach_to_Represent_Algebraic_Structures
 
