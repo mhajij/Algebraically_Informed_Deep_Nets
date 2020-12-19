@@ -48,11 +48,8 @@ def operator(input_dim=2,activation_function='linear',bias=True):
 
 
 def get_n_operators(dim,activation_function,bias,n_of_operators):
-    out=[]
     
-    op=operator(input_dim=dim,activation_function=activation_function,bias=bias)
-    for i in range(0,n_of_operators):        
-       out.append(op)
+    out=[operator(input_dim=dim,activation_function=activation_function,bias=bias) for i in range(0,n_of_operators)]
 
     return out   
 

@@ -96,6 +96,7 @@ if __name__ == '__main__':
         
         
         data1=np.load(data_folder+str(args.generator_dimension)+'d_data.npy')
+        print(data1.shape)
     
     else:        
         

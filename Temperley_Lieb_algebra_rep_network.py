@@ -22,22 +22,6 @@ os.system('cls')
 
 
 
-def iden_function(x):
-    return x 
-
-def identity(input_dim=2):
-    
-    inputs = Input(shape=(input_dim,))
-    
-    out = Lambda(iden_function, name="identity")(inputs)
-    
-    model=Model(inputs,out)
-    
-    return model
-
-
-
-
 
 
 def TL_generator_ins_outs(Ugen, inputs, gen_position=2, total_dimension=3,input_dim=2 ):

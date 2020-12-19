@@ -8,8 +8,7 @@ Created on Fri Nov  6 12:01:54 2020
 import numpy as np
 
 from tensorflow.keras import backend as K
-#import keras
-#from keras import backend as K
+
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Concatenate, Dense
 

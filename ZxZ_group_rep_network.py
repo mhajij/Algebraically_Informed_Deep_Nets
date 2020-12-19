@@ -19,8 +19,6 @@ os.system('cls')
 
 
 
-
-
 def ZxZ_group_rep_net(a_op,b_op,input_shape=2):
         
     
