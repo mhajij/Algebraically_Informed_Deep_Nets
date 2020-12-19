@@ -92,14 +92,14 @@ if __name__ == '__main__':
         data2=np.load(data_folder+str(d)+'d_data_2.npy')
         data3=np.load(data_folder+str(d)+'d_data_3.npy')
 
-    if dim in list(range(2,11)) and args.structure=="ZxZ" :
+    elif dim in list(range(2,11)) and args.structure=="ZxZ_group" :
         
         
         data1=np.load(data_folder+str(args.generator_dimension)+'d_data.npy')
     
     else:        
         
-        raise ValueError("generator dimension " +str(dim) +"is not in the constrained dimensions for this structure: dimension must be in [2,4,6] for the TL,'braid_group','symmetric_group' and between (2,10) for ZxZ. ")
+        raise ValueError("generator dimension " +str(dim) +"is not in the constrained dimensions for this structure: dimension must be in [2,4,6] for the TL,'braid_group','symmetric_group' and between (2,10) for ZxZ_group. ")
 
 
     if args.structure=='TL':
@@ -114,7 +114,7 @@ if __name__ == '__main__':
       
         print("generator function : R^"+str(args.generator_dimension) +"-> R^"+str(args.generator_dimension) ) 
      
-        Ugen=ut.operator(dim=args.generator_dimension,bias= args.bias, activation_function=args.network_generator_activation)
+        Ugen=ut.operator(input_dim=args.generator_dimension,bias= args.bias, activation_function=args.network_generator_activation)
         
 
         M=tlnet.TL_algebra_net(Ugen,delta =args.delta  ,input_dim=dim//2)
@@ -138,9 +138,9 @@ if __name__ == '__main__':
     
     
             print("saving the model.." )
-    
+            M.save(weight_folder+model_name)
+
             model_name_U_gen=model_string_gen("TL_algebra_generator_use_bias=")
-    
             
             Ugen.save(weight_folder+model_name_U_gen) 
     
@@ -178,13 +178,13 @@ if __name__ == '__main__':
         
         print("training the braid group generators")
                  
-        R_oP1,R_oP2=ut.get_n_operators(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias,2 )
+        R_oP1,R_oP2=ut.get_n_operators(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias,n_of_operators=2 )
         
         M=bgnet.braid_group_rep_net(R_oP1,R_oP2,input_shape=dim//2)
 
         model_name1=model_string_gen("braid_group_sigma_generator_use_bias=")
         model_name2=model_string_gen("braid_group_sigma_inverse_generator_use_bias=")
-        model_name3=model_string_gen("braid_group_relations_trainer_use_bias=")
+        model_name=model_string_gen("braid_group_relations_trainer_use_bias=")
         
         data_in=[data1,data2,data3]
         
@@ -201,7 +201,7 @@ if __name__ == '__main__':
  
             print("saving the models.." )
             
-            M.save(weight_folder+model_name3)
+            M.save(weight_folder+model_name)
             
             R_oP1.save(weight_folder+model_name1) 
             R_oP2.save(weight_folder+model_name2) 
@@ -234,7 +234,7 @@ if __name__ == '__main__':
             
     elif args.structure=='ZxZ_group': 
         
-        A_oP,B_oP=ut.get_n_operators(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias,2 )      
+        A_oP,B_oP=ut.get_n_operators(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias,n_of_operators=2 )      
 
         M=ZSnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)
 
@@ -250,6 +250,10 @@ if __name__ == '__main__':
         data_out=data1
 
         if args.mode=='training':
+ 
+
+            checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
+            callbacks_list = [checkpoint]                
             
             print("choosing the training mode. ")  
       
@@ -282,7 +286,7 @@ if __name__ == '__main__':
         print("training the symmetric_group generator")        
 
      
-        R_oP1=ut.operator(args.generator_dimension,activation_function=args.network_generator_activation ,bias=args.bias)
+        R_oP1=ut.operator(input_dim=args.generator_dimension,activation_function=args.network_generator_activation ,bias=args.bias)
         
     
         M=symgnet.symmetric_group_rep_net(R_oP1,input_shape=dim//2)
