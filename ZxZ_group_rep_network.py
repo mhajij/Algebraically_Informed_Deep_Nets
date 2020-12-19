@@ -9,11 +9,9 @@ import numpy as np
 from tensorflow.keras import backend as K
 
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Concatenate, Dense
+from tensorflow.keras.layers import Input, Concatenate
 from tensorflow.python.ops import math_ops
 import tensorflow as tf
-import cus_layers as cl
-import utilities as ut
 import os
 os.system('cls')
 
@@ -24,8 +22,8 @@ def ZxZ_group_rep_net(a_op,b_op,input_shape=2):
     """
     ZxZ=<a,b| ab=ba >
     
-    a_op : a network R^n->R^n represent the generator a in the presentation.
-    b_op : a network R^n->R^n represent the generator b in the presentation.
+    a_op : a network R^n->R^n represent the generator a in the presentation above.
+    b_op : a network R^n->R^n represent the generator b in the presentation above.
     
     input_shape : dimension of the rep.
     

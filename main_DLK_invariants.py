@@ -80,15 +80,7 @@ if __name__ == '__main__':
         model.compile(optimizer=tf.keras.optimizers.Adam(lr=args.learning_rate), loss = ki.RT_loss(args.iden_dimension))
 
         model_name="knot_model_dim="+str(args.iden_dimension)+".h5"
-        """    
-        if os.path.exists(model_name):
-            print("---------------------******---------------------------")
-            print("model weights found, loading weights from harddrive")
-            print("---------------------******---------------------------")
-        
-            model.load_weights(model_name)
-            
-        """    
+ 
         checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
 
         callbacks_list = [checkpoint]

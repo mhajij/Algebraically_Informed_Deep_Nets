@@ -5,31 +5,13 @@ Created on Thu Nov 12 21:37:47 2020
 @author: Mustafa Hajij
 """
 
-import numpy as np
-from tensorflow import keras
-from tensorflow.python.ops import math_ops
 import tensorflow as tf
-import tensorflow
 import os
 os.system('cls')
 
 
 
-class slice_layer(tensorflow.keras.layers.Layer):
-    def __init__(self,a=0,b=0,**kwargs):
-        
-        super(slice_layer, self).__init__(**kwargs)
-
-        self._a=a
-        self._b=b
-    
-
-    def call(self, inputs):
-                
-        return tf.slice(inputs,[self._a,self._b],[-1,1]) 
-
-
-class slice_layerA(tensorflow.keras.layers.Layer):
+class slice_layerA(tf.keras.layers.Layer):
     def __init__(self,a=0,b=0,c=0,d=0,**kwargs):
         
         super(slice_layerA, self).__init__(**kwargs)
@@ -56,7 +38,7 @@ class slice_layerA(tensorflow.keras.layers.Layer):
 
 
 
-class matrix_tensor(tensorflow.keras.layers.Layer):
+class matrix_tensor(tf.keras.layers.Layer):
     def __init__(self):
         
         super(matrix_tensor, self).__init__()
@@ -69,7 +51,7 @@ class matrix_tensor(tensorflow.keras.layers.Layer):
 
 
 
-class eye(tensorflow.keras.layers.Layer):
+class eye(tf.keras.layers.Layer):
     def __init__(self,size):
         
         super(eye, self).__init__()

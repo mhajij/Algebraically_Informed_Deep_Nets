@@ -26,6 +26,45 @@ os.system('cls')
 
 def TL_generator_ins_outs(Ugen, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
     
+    
+    """
+    
+    input:
+        Ugen : network R^n->R^n, used to define the generator in the TL algebra
+        
+        Ui=id^{i-1} X Ugen X id^{m-i+1} 
+        inputs: input tensor
+        
+        gen_position: this is the index "i" in Ui
+        
+        total_dimension : this is the index m in TL_{m}
+        
+        input_dim: this is the dimension n on which the function Ugen : network R^n->R^n is defined. 
+        
+    returns :
+        f_{Ui}(inputs)
+        
+        where f_{Ui}=id^{i-1} X Ugen X id^{m-i+1}
+        
+        
+        
+
+
+    purpose:
+        
+     From the paper: the presentation of the TL algebra is given by :
+     TL_m=< U1,...,U_{m-1} | U_i*U_{i-1}*U_i=U_i, U_i*U_{i+1}*U_i=U_i ,U_i^2=\delta*U_i, UiUj = UjUi > 
+     
+     where 
+     
+     Ui=id^{i-1} X U X id^{m-i+1}, and U is a the two hooks shape curve in the TL generator Ui.
+     
+     hence it is enough to train Ugen for the entire rep of the TL algebra
+         
+    
+    this function defines a network f_{Ui}:R^n->R^n and for a subset of the domain (inputs), it returns f_{Ui}(input) 
+    
+    """
 
     con_list=[]
         
@@ -69,18 +108,27 @@ def TL_algebra_net(Ugen,delta=2,input_dim=2):
         
     """
     input:
+     
         
-     Ugen :  a network that is trained inside this function.
+     Ugen :  a network that is trained inside this network.
      delta : a constant in the TL algebra.
      input_dim : input dimension for Ugen.
-    
+     
     return : a model that outputs the both sides of the TL relations. These tensors are later used in the loss function for training.
     
     purpose : training Ugen to satisfy the relations of the TL algebera.
             (1) U_i*U_{i-1}*U_i=U_i
             (2) U_i*U_{i+1}*U_i=U_i  
             (3) U_i^2=\delta*U_i
-    
+            
+     From the paper: the presentation of the TL algebra is given by :
+     TL_m=< U1,...,U_{m-1} | U_i*U_{i-1}*U_i=U_i, U_i*U_{i+1}*U_i=U_i ,U_i^2=\delta*U_i, UiUj = UjUi > 
+     
+     where 
+     
+     Ui=id^{i-1} X Ugen X id^{m-i+1}    
+     hence it is enough to train Ugen for the entire rep of the TL algebra
+     
     """
     
     # define the input tensors
@@ -90,7 +138,7 @@ def TL_algebra_net(Ugen,delta=2,input_dim=2):
     
 
     
-    # U_i*U_{i-1}*U_i=U_i
+    # relation : U_i*U_{i-1}*U_i=U_i
     outs=TL_generator_ins_outs(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=2, total_dimension=3,input_dim=input_dim)   
     outs=TL_generator_ins_outs(Ugen,outs,gen_position=1, total_dimension=3,input_dim=input_dim)   
     outs_side1_equation_1=TL_generator_ins_outs(Ugen,outs,gen_position=2, total_dimension=3,input_dim=input_dim)
@@ -99,7 +147,7 @@ def TL_algebra_net(Ugen,delta=2,input_dim=2):
 
 
 
-    # U_i*U_{i+1}*U_i=U_i  
+    # relation : U_i*U_{i+1}*U_i=U_i  
     outs=TL_generator_ins_outs(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=1, total_dimension=3,input_dim=input_dim)   
     outs=TL_generator_ins_outs(Ugen,outs,gen_position=2, total_dimension=3,input_dim=input_dim)   
     outs_side1_equation_2=TL_generator_ins_outs(Ugen,outs,gen_position=1, total_dimension=3,input_dim=input_dim)
@@ -111,7 +159,7 @@ def TL_algebra_net(Ugen,delta=2,input_dim=2):
 
 
     
-    ## U_{i}^2=\delta*U_{i} 
+    # relation : U_{i}^2=\delta*U_{i} 
     out_gen=Ugen(Concatenate()([input_tensor_1,input_tensor_2]) )
 
     outs_side1_equation_3=Ugen(out_gen)
