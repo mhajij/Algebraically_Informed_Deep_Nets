@@ -5,58 +5,14 @@ Created on Tue Oct 20 22:09:49 2020
 @author: Mustafa Hajij
 """
 
-import numpy as np
 
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Concatenate, Dense
-from tensorflow.keras.layers import Lambda
+from tensorflow.keras.layers import Input, Concatenate
 import cus_layers as cl
 from tensorflow.python.ops import math_ops
 import tensorflow as tf
 
-import os
-os.system('cls')
-
-
-
-
-def Id(x):
-    return x 
-
-def identity(dim=2):
-    
-    inputs = Input(shape=(dim,))
-    
-    out = Lambda(Id, name="identity")(inputs)
-    
-    model=Model(inputs,out)
-    
-    return model
-
-
-def R_operator(dim=2,bias=False,activation_function='linear'):
-
-
-    inputs = Input(shape=(dim,))
-
-    x=Dense(2*dim+2,use_bias=bias, activation=activation_function)(inputs)
-
-    x=Dense(2*dim+2,use_bias=bias, activation=activation_function)(x)
-
-    x=Dense(100,use_bias=bias, activation=activation_function)(x)
-
-    x=Dense(50,use_bias=bias, activation=activation_function)(x)
-
-
-        
-
-    predictions=Dense(dim,use_bias=bias, activation='linear' ,name='final_output')(x)
-
-
-    model = Model(inputs=inputs, outputs=predictions)
-    
-    return model
 
 
 def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
@@ -162,6 +118,7 @@ def braid_group_rep_loss(input_dim=1):
         A=K.mean(math_ops.square(equation_1_out - equation_2_out), axis=-1) # YangBaxter
             
         B=K.mean(math_ops.square(y_true-final_R_2_out_1), axis=-1) # R2 moves  
+        
         C=K.mean(math_ops.square(y_true-final_R_2_out_2), axis=-1) # R2 moves   
         
         return A+B+C

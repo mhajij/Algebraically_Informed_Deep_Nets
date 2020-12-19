@@ -11,7 +11,6 @@ from tensorflow.keras import backend as K
 
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Concatenate, Dense
-from tensorflow.keras.layers import Lambda
 
 import cus_layers as cl
 
@@ -25,42 +24,9 @@ os.system('cls')
 
 
 
-def Id(x):
-    return x 
-
-def identity(dim=2):
-    
-    inputs = Input(shape=(dim,))
-    
-    out = Lambda(Id, name="identity")(inputs)
-    
-    model=Model(inputs,out)
-    
-    return model
 
 
-def sigma_operator(input_dim=2,activation_function='linear',bias=False):
 
-
-    inputs = Input(shape=(input_dim,))
-
-    x=Dense(input_dim+2,use_bias=bias, activation=activation_function)(inputs)
-
-    x=Dense(input_dim+2,use_bias=bias, activation=activation_function)(inputs)
-
-    x=Dense(100,use_bias=bias, activation=activation_function)(x)
-
-    x=Dense(20,use_bias=bias, activation=activation_function)(x)
-
-    x=Dense(10,use_bias=bias, activation=activation_function)(x)
-
-  
-    predictions=Dense(input_dim,use_bias=bias, activation='linear' ,name='final_output')(x)
-
-
-    model = Model(inputs=inputs, outputs=predictions)
-    
-    return model
 
 
 def symmetric_generator_ins_outs(braid_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):

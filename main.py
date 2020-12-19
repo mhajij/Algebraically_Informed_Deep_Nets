@@ -123,7 +123,7 @@ if __name__ == '__main__':
             dim=args.generator_dimension
             
             
-            Ugen=tlnet.U_generator(dim=args.generator_dimension,bias= args.bias, activation_function=args.network_generator_activation)
+            Ugen=ut.operator(dim=args.generator_dimension,bias= args.bias, activation_function=args.network_generator_activation)
             
 
             M=tlnet.TL_algebra_net(Ugen,delta =args.delta  ,input_dim=dim//2)
@@ -160,9 +160,9 @@ if __name__ == '__main__':
             dim=args.generator_dimension
             
                         
-            R_oP1=bgnet.R_operator(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias )
+            R_oP1=ut.operator(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias )
             
-            R_oP2=bgnet.R_operator(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias)
+            R_oP2=ut.operator(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias)
             
             
             M=bgnet.braid_group_rep_net(R_oP1,R_oP2,input_shape=dim//2)
@@ -220,9 +220,9 @@ if __name__ == '__main__':
             dim=args.generator_dimension
             
                         
-            A_oP=ZSnet.a_operator(args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias )
+            A_oP=ut.operator(args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias )
             
-            B_oP=ZSnet.a_operator(args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias)
+            B_oP=ut.operator(args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias)
             
             
             M=ZSnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)
@@ -263,7 +263,7 @@ if __name__ == '__main__':
 
             dim=args.generator_dimension
          
-            R_oP1=symgnet.sigma_operator(args.generator_dimension,activation_function=args.network_generator_activation ,bias=args.bias)
+            R_oP1=ut.operator(args.generator_dimension,activation_function=args.network_generator_activation ,bias=args.bias)
             
             
             
@@ -315,7 +315,7 @@ if __name__ == '__main__':
             
             dim=args.generator_dimension
 
-            Ugen=tlnet.U_generator(dim=args.generator_dimension,bias=args.bias,activation_function=args.network_generator_activation)
+            Ugen=ut.operator(dim=args.generator_dimension,bias=args.bias,activation_function=args.network_generator_activation)
             
             M=tlnet.TL_algebra_net(Ugen,delta =args.delta  ,input_dim=dim//2)
 
@@ -350,9 +350,9 @@ if __name__ == '__main__':
             dim=args.generator_dimension
             
                         
-            R_oP1=bgnet.R_operator(dim=args.generator_dimension,activation_function=args.network_generator_activation, bias=args.bias)
+            R_oP1=ut.operator(dim=args.generator_dimension,activation_function=args.network_generator_activation, bias=args.bias)
             
-            R_oP2=bgnet.R_operator(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias)
+            R_oP2=ut.operator(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias)
             
             
             M=bgnet.braid_group_rep_net(R_oP1,R_oP2,input_shape=dim//2)
@@ -450,9 +450,9 @@ if __name__ == '__main__':
 
             dim=args.generator_dimension
 
-            A_oP=ZSnet.a_operator(args.generator_dimension,activation_function=args.network_generator_activation,  bias=args.bias)
+            A_oP=ut.operator(args.generator_dimension,activation_function=args.network_generator_activation,  bias=args.bias)
             
-            B_oP=ZSnet.a_operator(args.generator_dimension, activation_function=args.network_generator_activation, bias=args.bias)
+            B_oP=ut.operator(args.generator_dimension, activation_function=args.network_generator_activation, bias=args.bias)
             
             
             M=ZSnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)

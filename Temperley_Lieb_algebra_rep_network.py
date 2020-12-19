@@ -9,6 +9,7 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Concatenate,  Dense
 from tensorflow.keras.layers import Lambda
+import utilities as ut
 
 import cus_layers as cl
 
@@ -34,23 +35,7 @@ def identity(input_dim=2):
     
     return model
 
-def U_generator(dim=2,activation_function='linear',bias=True):
-    # input dim must be equal to the output dimension
 
-    inputs = Input(shape=(dim,))
-
-    x=Dense(2*dim+2,use_bias=bias, activation=activation_function)(inputs)
-    x=Dense(2*dim+2,use_bias=bias, activation=activation_function)(inputs)
-
-    x=Dense(100,use_bias=bias, activation=activation_function)(x)
-
-    x=Dense(50,use_bias=bias, activation=activation_function)(x)
-
-    predictions=Dense(dim,use_bias=bias, activation='linear',name='final_output')(x)
-
-
-    model = Model(inputs=inputs, outputs=predictions)
-    return model
 
 
 
