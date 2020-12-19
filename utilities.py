@@ -47,6 +47,16 @@ def operator(input_dim=2,activation_function='linear',bias=True):
     return model
 
 
+def get_n_operators(dim,activation_function,bias,n_of_operators):
+    out=[]
+    
+    op=operator(dim=dim,activation_function=activation_function,bias=bias)
+    
+    for i in range(n_of_operators):        
+       out.append(op)
+    out   
+
+
 def train_net(model,x_data,y_data,lossfunction,callbacks_list,lr,batch_size,epochs):
     
     model.compile(optimizer=keras.optimizers.Adam(lr=lr), loss = lossfunction  )

@@ -4,22 +4,16 @@ Created on Fri Nov  6 12:01:54 2020
 
 @author: Mustafa Hajij
 """
-
 import Temperley_Lieb_algebra_rep_network as tlnet 
 import braid_group_rep_network as bgnet
 import symmetric_group_rep_network as symgnet
 import ZxZ_group_rep_network as ZSnet
 import utilities as ut
 
-import math
 import numpy as np
 from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow  import keras
 import argparse
-
-import numpy as np
 import os.path
-import os
 
 def model_string_gen(model_name):
     
@@ -37,8 +31,6 @@ data_folder='data/'
 
 if __name__ == '__main__':
 
-    
-    
     parser = argparse.ArgumentParser()
 
     # testing or training argument
@@ -87,23 +79,27 @@ if __name__ == '__main__':
     #___________________________________________________________
 
 
-
-
     args = parser.parse_args()
 
     dim=args.generator_dimension
     d=dim//2
+
+ 
     
-    if dim in [2,4,6]:
+    if dim in [2,4,6] and args.structure in ["TL",'braid_group','symmetric_group']:
         
         data1=np.load(data_folder+str(d)+'d_data_1.npy')
         data2=np.load(data_folder+str(d)+'d_data_2.npy')
         data3=np.load(data_folder+str(d)+'d_data_3.npy')
-         
-    else:
-    
-        raise ValueError("dimensions are constrained to 2 , 4 or 6")
 
+    if dim in list(range(2,11)) and args.structure=="ZxZ" :
+        
+        
+        data1=np.load(data_folder+str(args.generator_dimension)+'d_data.npy')
+    
+    else:        
+        
+        raise ValueError("generator dimension " +str(dim) +"is not in the constrained dimensions for this structure: dimension must be in [2,4,6] for the TL,'braid_group','symmetric_group' and between (2,10) for ZxZ. ")
 
 
     if args.structure=='TL':
@@ -175,8 +171,6 @@ if __name__ == '__main__':
         else:
             raise ValueError("Mode options are either training or testing.")
                           
-                    
-
             
     elif args.structure=='braid_group': 
         
@@ -184,10 +178,7 @@ if __name__ == '__main__':
         
         print("training the braid group generators")
                  
-        R_oP1=ut.operator(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias )
-        
-        R_oP2=ut.operator(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias)
-        
+        R_oP1,R_oP2=ut.get_n_operators(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias,2 )
         
         M=bgnet.braid_group_rep_net(R_oP1,R_oP2,input_shape=dim//2)
 
@@ -207,11 +198,11 @@ if __name__ == '__main__':
             
             ut.train_net(M,data_in,data_out,bgnet.braid_group_rep_loss(dim//2),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
             
+ 
+            print("saving the models.." )
             
             M.save(weight_folder+model_name3)
             
-            print("saving the models.." )
-
             R_oP1.save(weight_folder+model_name1) 
             R_oP2.save(weight_folder+model_name2) 
  
@@ -243,18 +234,8 @@ if __name__ == '__main__':
             
     elif args.structure=='ZxZ_group': 
         
-        if args.generator_dimension in list(range(2,11)):
-            
-            
-            data1=np.load(data_folder+str(args.generator_dimension)+'d_data.npy')
-        
-        else:        
-            
-            raise ValueError("dimensions are constrained between 2 and 10")
-                
-        A_oP=ut.operator(args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias )    
-        B_oP=ut.operator(args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias)
-     
+        A_oP,B_oP=ut.get_n_operators(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias,2 )      
+
         M=ZSnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)
 
 
@@ -271,9 +252,7 @@ if __name__ == '__main__':
         if args.mode=='training':
             
             print("choosing the training mode. ")  
-    
-   
-            
+      
             ut.train_net(M,data_in,data_out,ZSnet.ZxZ_group_rep_loss(dim),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
    
             M.save(weight_folder+model_name)
