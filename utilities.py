@@ -9,6 +9,7 @@ from tensorflow  import keras
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense
 from tensorflow.keras.layers import Lambda
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 
 def Id(x):
@@ -54,12 +55,18 @@ def get_n_operators(dim,activation_function,bias,n_of_operators):
     return out   
 
 
-def train_net(model,x_data,y_data,lossfunction,callbacks_list,lr,batch_size,epochs):
+def train_net(model,x_data,y_data,model_name,lossfunction,lr,batch_size,epochs,):
+ 
     
-    model.compile(optimizer=keras.optimizers.Adam(lr=lr), loss = lossfunction  )
-
-            
+    checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
+    
+    callbacks_list = [checkpoint]   
+    
+    model.compile(optimizer=keras.optimizers.Adam(lr=lr), loss = lossfunction  )           
+    
     model.fit(x_data, y_data,  batch_size=batch_size, epochs=epochs, shuffle = True,  verbose=1,callbacks=callbacks_list)  
+    
+    return 1
     
 def get_relation_tensor(modelpath,model,data):
     

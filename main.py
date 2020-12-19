@@ -11,17 +11,13 @@ import ZxZ_group_rep_network as ZSnet
 import utilities as ut
 
 import numpy as np
-from tensorflow.keras.callbacks import ModelCheckpoint
 import argparse
-import os.path
 
 def model_string_gen(model_name):
     
     name=model_name+str(args.bias)+"_activation="+  str(args.network_generator_activation)+"_"+str(args.generator_dimension)+"_to_"+str(args.generator_dimension)+"_delta="+str(args.delta)+"_.h5"
     
     return name
-
-
     
 weight_folder='weights/'   
  
@@ -84,8 +80,6 @@ if __name__ == '__main__':
     dim=args.generator_dimension
     d=dim//2
 
- 
-    
     if dim in [2,4,6] and args.structure in ["TL",'braid_group','symmetric_group']:
         
         data1=np.load(data_folder+str(d)+'d_data_1.npy')
@@ -96,7 +90,6 @@ if __name__ == '__main__':
         
         
         data1=np.load(data_folder+str(args.generator_dimension)+'d_data.npy')
-        print(data1.shape)
     
     else:        
         
@@ -122,6 +115,7 @@ if __name__ == '__main__':
         
         
         model_name=model_string_gen("TL_algebra_relations_trainer_use_bias=")
+        model_name_U_gen=model_string_gen("TL_algebra_generator_use_bias=")
         
         data_in=[data1,data2,data3]
         data_out=data1
@@ -129,23 +123,14 @@ if __name__ == '__main__':
         
         if args.mode=='training':
             
-            print("choosing the training mode. ")  
-        
-            checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
-            callbacks_list = [checkpoint]
-    
-            
-            ut.train_net(M,data_in,data_out,tlnet.TL_loss_wrapper(dim//2),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
-    
-    
+            print("choosing the training mode. ")     
+            ut.train_net(M,data_in,data_out, weight_folder+model_name ,tlnet.TL_loss_wrapper(dim//2),args.learning_rate,args.batch_size,args.epoch)
+   
             print("saving the model.." )
             M.save(weight_folder+model_name)
 
-            model_name_U_gen=model_string_gen("TL_algebra_generator_use_bias=")
             
             Ugen.save(weight_folder+model_name_U_gen) 
-    
-    
             print("model saved.")
 
         elif args.mode=='testing':
@@ -193,17 +178,13 @@ if __name__ == '__main__':
         if args.mode=='training':
             
             print("choosing the training mode. ")  
-    
-            checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
-            callbacks_list = [checkpoint]    
+
             
-            ut.train_net(M,data_in,data_out,bgnet.braid_group_rep_loss(dim//2),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
+            ut.train_net(M,data_in,data_out,weight_folder+model_name ,bgnet.braid_group_rep_loss(dim//2),args.learning_rate,args.batch_size,args.epoch)
             
  
             print("saving the models.." )
-            
-            M.save(weight_folder+model_name)
-            
+                        
             R_oP1.save(weight_folder+model_name1) 
             R_oP2.save(weight_folder+model_name2) 
  
@@ -231,56 +212,7 @@ if __name__ == '__main__':
             print(np.linalg.norm(relations_tensor[:,8*d:]-data_out))
         else:
             raise ValueError("Mode options are either training or testing.")
-                              
-            
-    elif args.structure=='ZxZ_group': 
-        
-        A_oP,B_oP=ut.get_n_operators(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias,n_of_operators=2 )      
-
-        M=ZSnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)
-
-
-        model_name=model_string_gen("ZxZ_group_relations_trainer_use_bias=")
-        
-        
-        aname=model_string_gen("ZxZ_group_a_generator_use_bias=")
-        
-        bname=model_string_gen("ZxZ_group_b_generator_use_bias=")
-        
-        data_in=data1
-        data_out=data1
-
-        if args.mode=='training':
- 
-
-            checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
-            callbacks_list = [checkpoint]                
-            
-            print("choosing the training mode. ")  
-      
-            ut.train_net(M,data_in,data_out,ZSnet.ZxZ_group_rep_loss(dim),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
-   
-            M.save(weight_folder+model_name)
-
-            print("saving the generator operator to file : " + aname )
-
-            A_oP.save(weight_folder+aname) 
-            print("saving the generator operator to file : " + bname )
-            
-            B_oP.save(weight_folder+bname) 
- 
-            print("model saved.")
-            
-
-        elif args.mode=='testing':  
-            relations_tensor=ut.get_relation_tensor(weight_folder+model_name,M,data_in)
-           
-            print("testing the relation:  ")
-
-            print( np.linalg.norm( relations_tensor[:,:dim][:100]-relations_tensor[:,dim:][:100]))
-        else:
-            raise ValueError("Mode options are either training or testing.")
-
+     
         
     elif args.structure=='symmetric_group': 
                       
@@ -301,11 +233,9 @@ if __name__ == '__main__':
         if args.mode=='training':
             
             print("choosing the training mode. ")  
-    
-            checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True, mode='min')
-            callbacks_list = [checkpoint]   
+ 
        
-            ut.train_net(M,data_in, data_out, symgnet.symmetric_group_rep_loss(dim//2),callbacks_list,args.learning_rate,args.batch_size,args.epoch)
+            ut.train_net(M,data_in, data_out, weight_folder+model_name ,symgnet.symmetric_group_rep_loss(dim//2),args.learning_rate,args.batch_size,args.epoch)
  
             print("saving the model..")
             
@@ -320,7 +250,6 @@ if __name__ == '__main__':
             
             relations_tensor=ut.get_relation_tensor(weight_folder+model_name,M,data_in)
 
-
             print("testing the relation:  R3 ")
 
             print(np.linalg.norm(relations_tensor[:,0:3*d]-relations_tensor[:,3*d:6*d]))
@@ -331,13 +260,49 @@ if __name__ == '__main__':
         else:
             raise ValueError("Mode options are either training or testing.")
                           
-
-            
-    else:
+    elif args.structure=='ZxZ_group': 
         
+        A_oP,B_oP=ut.get_n_operators(dim=args.generator_dimension,activation_function=args.network_generator_activation,bias=args.bias,n_of_operators=2 )      
+
+        M=ZSnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)
+
+
+        model_name=model_string_gen("ZxZ_group_relations_trainer_use_bias=")    
+        
+        aname=model_string_gen("ZxZ_group_a_generator_use_bias=")
+        
+        bname=model_string_gen("ZxZ_group_b_generator_use_bias=")
+        
+        data_in=data1
+        data_out=data1
+
+        if args.mode=='training':
+               
+            
+            print("choosing the training mode. ")  
+      
+            ut.train_net(M,data_in,data_out,weight_folder+model_name ,ZSnet.ZxZ_group_rep_loss(dim),args.learning_rate,args.batch_size,args.epoch)
+   
+
+            print("saving the generator operator to file : " + aname )
+
+            A_oP.save(weight_folder+aname) 
+            print("saving the generator operator to file : " + bname )
+            
+            B_oP.save(weight_folder+bname) 
+ 
+            print("model saved.")
+            
+
+        elif args.mode=='testing':  
+            relations_tensor=ut.get_relation_tensor(weight_folder+model_name,M,data_in)
+           
+            print("testing the relation:  ")
+
+            print( np.linalg.norm( relations_tensor[:,:dim][:100]-relations_tensor[:,dim:][:100]))
+        else:
+            raise ValueError("Mode options are either training or testing.")           
+    else:     
         raise ValueError("structures must be : TL, braid_group, symmetric_group, or ZxZ_group")
 
-       
-  
- 
-    
+      
