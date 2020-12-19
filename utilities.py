@@ -28,6 +28,10 @@ def identity(dim=2):
 
 
 def operator(input_dim=2,activation_function='linear',bias=True):
+    
+    """
+    this is a network that can used to represent element in a given presentation. The choice is the one made in the paper.    
+    """
 
 
     inputs = Input(shape=(input_dim,))
