@@ -52,3 +52,11 @@ def train_net(model,x_data,y_data,lossfunction,callbacks_list,lr,batch_size,epoc
     model.compile(optimizer=keras.optimizers.Adam(lr=lr), loss = lossfunction  )
             
     model.fit(x_data, y_data,  batch_size=batch_size, epochs=epochs, shuffle = True,  verbose=1,callbacks=callbacks_list)  
+    
+def get_relation_tensor(modelpath,model,data):
+    
+    model.load_weights(modelpath)
+
+    return model.predict(data)
+    
+    
