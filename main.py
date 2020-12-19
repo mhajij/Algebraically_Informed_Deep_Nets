@@ -123,7 +123,9 @@ if __name__ == '__main__':
         
         if args.mode=='training':
             
-            print("choosing the training mode. ")     
+            print("choosing the training mode. ")   
+            
+            
             ut.train_net(M,data_in,data_out, weight_folder+model_name ,tlnet.TL_loss_wrapper(dim//2),args.learning_rate,args.batch_size,args.epoch)
    
             print("saving the model.." )
