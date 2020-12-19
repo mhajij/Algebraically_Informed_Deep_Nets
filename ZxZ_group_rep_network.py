@@ -20,6 +20,20 @@ os.system('cls')
 
 
 def ZxZ_group_rep_net(a_op,b_op,input_shape=2):
+    
+    """
+    ZxZ=<a,b| ab=ba >
+    
+    a_op : a network R^n->R^n represent the generator a in the presentation.
+    b_op : a network R^n->R^n represent the generator b in the presentation.
+    
+    input_shape : dimension of the rep.
+    
+    purpose : this is an axiluray network that is trained to force the relations on the input generators.
+    
+    the network returns the sides of the relations of this algebraic structure.
+    
+    """
         
     
     input_tensor_1=Input(shape=(input_shape,))

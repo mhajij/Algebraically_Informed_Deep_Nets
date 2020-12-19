@@ -16,6 +16,7 @@ import tensorflow as tf
 
 
 def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
+ 
     
 
     con_list=[]
@@ -53,7 +54,21 @@ def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, to
 
 
 def braid_group_rep_net(R_op,R_op_inv,input_shape=1):
-        
+
+    """
+
+    
+    R_op : a network R^n->R^n represent a crossing element in braid group.
+
+    R_op_inv : a network R^n->R^n represent the inverse crossing element in braid group.
+    
+    input_shape : dimension of the rep.
+    
+    purpose : this is an axiluray network that is trained to force the relations on the input generators.
+    
+    the network returns the sides of the relations of this algebraic structure.
+    
+    """        
     
     input_tensor_1=Input(shape=(input_shape,))
         

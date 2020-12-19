@@ -68,6 +68,18 @@ def symmetric_generator_ins_outs(braid_generator_network, inputs, gen_position=2
 
 def symmetric_group_rep_net(R_op,input_shape=1):
         
+    """
+
+    
+    R_op : a network R^n->R^n represent a transposition element in symmetric group.
+    
+    input_shape : dimension of the rep.
+    
+    purpose : this is an axiluray network that is trained to force the relations on the input generators.
+    
+    the network returns the sides of the relations of this algebraic structure.
+    
+    """
     
     input_tensor_1=Input(shape=(input_shape,))
         
