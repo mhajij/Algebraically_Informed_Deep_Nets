@@ -44,7 +44,7 @@ Additional arguments are also provided for customized value for the delta consta
 Finally, we utilize AIDN to obtain new knot theory invariants using the Reshetikhin-Turaev construction. The latter can be tested or trained using the file
 
 ```ruby
-main_DLK_invariants.py
+main_knot_invariants.py
 ```
 Some of the networks we tested are also provided in the repo.
 
