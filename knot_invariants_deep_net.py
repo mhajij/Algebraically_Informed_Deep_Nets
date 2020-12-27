@@ -6,21 +6,16 @@ Created on Fri Nov  6 12:01:54 2020
 @author: Mustafa Hajij
 """
 import numpy as np
-
 from tensorflow.keras import backend as K
-
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Concatenate, Dense
-
-
 from tensorflow.python.ops import math_ops
 import tensorflow as tf
 
 
 
-class RT_cus_layer_(tf.keras.layers.Layer):
+class RTLayer(tf.keras.layers.Layer):
     def __init__(self,eye_size=2,loop_constant=2):
-        super(RT_cus_layer_, self).__init__()
+        super(RTLayer, self).__init__()
         self.eyesize=eye_size
         self.loop_constant=loop_constant
       
@@ -200,13 +195,6 @@ class RT_cus_layer_(tf.keras.layers.Layer):
         self.u_reshaped=tf.reshape(self.u, shape=(self.eyesize,self.eyesize) )
         self.n_reshaped=tf.reshape(self.n, shape=(self.eyesize,self.eyesize) )
         
-
-        
-        
-        
-
-
-
 
     def call(self, inputs):
         
@@ -397,14 +385,13 @@ class RT_cus_layer_(tf.keras.layers.Layer):
         return tf.concat([x3,y3,side_1_r2,side_2_r2,side_1_r1,side_2_r1,a2,b2,c2,d2,side_1_r1_u,
                           side_2_r1_u,normalized_first_side,normalized_second_side,side_1_r1_Rinv,
                           side_2_r1_Rinv,side_1_r1_u_Rinv,side_2_r1_u_Rinv,f2,ff2],1)
-    
-    
+       
 
 def RT_training_net(id_dim=2,loop_constant=2):
 
     inputs = tf.keras.layers.Input(shape=(id_dim**3,))
     
-    F=RT_cus_layer_(id_dim,loop_constant)  
+    F=RTLayer(id_dim,loop_constant)  
     
     out=F(inputs)
     
@@ -412,7 +399,6 @@ def RT_training_net(id_dim=2,loop_constant=2):
     
     return model
     
-
 
 def RT_loss(id_dim=2):
     
@@ -528,8 +514,6 @@ def get_weights(model,id_size):
     
     return R,R_inv,n,u
 
-
-
 def tensor(a,b,shape):
         
     temp=np.tensordot( a, b, axes=0) 
@@ -541,7 +525,6 @@ def tensor(a,b,shape):
     return d
 
 def composition(a,b):
-    
-      
+         
     return np.dot(a,b)
 

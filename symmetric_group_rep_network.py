@@ -5,28 +5,14 @@ Created on Tue Oct 20 22:09:49 2020
 @author: Mustafa Hajij
 """
 
-import numpy as np
-
-from tensorflow.keras import backend as K
-
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Concatenate, Dense
-
-import cus_layers as cl
-
-
-from tensorflow.python.ops import math_ops
 import tensorflow as tf
+from tensorflow.keras import backend as K
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Concatenate
+from tensorflow.python.ops import math_ops
+import cus_layers as cl
 import os
 os.system('cls')
-
-
-
-
-
-
-
-
 
 
 def symmetric_generator_ins_outs(braid_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
@@ -65,12 +51,9 @@ def symmetric_generator_ins_outs(braid_generator_network, inputs, gen_position=2
     return outs 
 
 
-
 def symmetric_group_rep_net(R_op,input_shape=1):
         
-    """
-
-    
+    """  
     R_op : a network R^n->R^n represent a transposition element in symmetric group.
     
     input_shape : dimension of the rep.
@@ -105,10 +88,7 @@ def symmetric_group_rep_net(R_op,input_shape=1):
     
     outs=symmetric_generator_ins_outs(R_op,outs,gen_position=1, total_dimension=3,input_dim=input_shape)     
     
-    outs_side2_equation_1=symmetric_generator_ins_outs(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape)
-        
-    
-    
+    outs_side2_equation_1=symmetric_generator_ins_outs(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape)   
     
     # R_2 first side
 

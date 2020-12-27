@@ -10,11 +10,10 @@ import os
 os.system('cls')
 
 
-
-class slice_layerA(tf.keras.layers.Layer):
+class SliceLayer(tf.keras.layers.Layer):
     def __init__(self,a=0,b=0,c=0,d=0,**kwargs):
         
-        super(slice_layerA, self).__init__(**kwargs)
+        super(SliceLayer, self).__init__(**kwargs)
 
         self._a=a
         self._b=b
@@ -38,23 +37,20 @@ class slice_layerA(tf.keras.layers.Layer):
 
 
 
-class matrix_tensor(tf.keras.layers.Layer):
+class MatrixTensor(tf.keras.layers.Layer):
     def __init__(self):
         
-        super(matrix_tensor, self).__init__()
-
+        super(MatrixTensor, self).__init__()
 
     def call(self,a,b):
                 
         return tf.tensordot( a, b, axes=0)
 
 
-
-
-class eye(tf.keras.layers.Layer):
+class Eye(tf.keras.layers.Layer):
     def __init__(self,size):
         
-        super(eye, self).__init__()
+        super(Eye, self).__init__()
         self.size=size
 
     def call(self):
