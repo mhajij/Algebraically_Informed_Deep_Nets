@@ -9,10 +9,10 @@ Created on Tue Oct 20 22:09:49 2020
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Concatenate
-import cus_layers as cl
 from tensorflow.python.ops import math_ops
 import tensorflow as tf
 
+import cus_layers as cl
 
 
 def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):

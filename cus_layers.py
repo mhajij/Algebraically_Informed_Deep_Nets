@@ -7,6 +7,7 @@ Created on Thu Nov 12 21:37:47 2020
 
 import tensorflow as tf
 import os
+
 os.system('cls')
 
 

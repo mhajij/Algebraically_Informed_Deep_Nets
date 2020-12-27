@@ -6,6 +6,7 @@ Created on Fri Nov  6 12:01:54 2020
 @author: Mustafa Hajij
 """
 import numpy as np
+
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.python.ops import math_ops
