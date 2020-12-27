@@ -119,13 +119,14 @@ def symmetric_group_rep_loss(input_dim=1):
         
         equation_1_out=tf.slice(y_pred,[0,0],[-1,3*input_dim])
         equation_2_out=tf.slice(y_pred,[0,3*input_dim],[-1,3*input_dim])
+        
         final_R_2_out_1=tf.slice(y_pred,[0,6*input_dim],[-1,2*input_dim])
         
-        A=K.mean(math_ops.square(equation_1_out - equation_2_out), axis=-1) # YangBaxter
+        yang_baxter_relation=K.mean(math_ops.square(equation_1_out - equation_2_out), axis=-1) # YangBaxter relation
             
-        B=K.mean(math_ops.square(y_true-final_R_2_out_1), axis=-1) # R2 moves  
+        r_2_relation=K.mean(math_ops.square(y_true-final_R_2_out_1), axis=-1) # R2 move relation  
         
-        return A+B
+        return r_2_relation+yang_baxter_relation
     
     return loss
 

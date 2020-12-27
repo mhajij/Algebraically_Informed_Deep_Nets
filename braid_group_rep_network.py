@@ -124,6 +124,19 @@ def braid_group_rep_net(R_op,R_op_inv,input_shape=1):
 
 
 def braid_group_rep_loss(input_dim=1):
+
+    """
+    Purpose
+    -------
+        
+        loss for the braid group. When the loss is minimal, the TL relations are satisfied for the generator R_op.
+
+
+    Parameters
+    ----------    
+        input_dim, the dimension of the R_op generator for the braid group.
+        
+    """
     
     def loss(y_true,y_pred):
         
