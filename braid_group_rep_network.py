@@ -16,8 +16,6 @@ import tensorflow as tf
 
 
 def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
- 
-    
 
     con_list=[]
         
@@ -46,7 +44,7 @@ def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, to
         
     for i in range(0,total_dimension):
         
-        x_i=cl.slice_layerA(0,2*input_dim,-1,input_dim)(con_final)
+        x_i=cl.SliceLayer(0,2*input_dim,-1,input_dim)(con_final)
         outs.append(x_i)
     
     return outs 
@@ -56,7 +54,6 @@ def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, to
 def braid_group_rep_net(R_op,R_op_inv,input_shape=1):
 
     """
-
     
     R_op : a network R^n->R^n represent a crossing element in braid group.
 
@@ -82,9 +79,7 @@ def braid_group_rep_net(R_op,R_op_inv,input_shape=1):
     
     outs=braid_generator_ins_outs(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape) 
     
-    outs_side1_equation_1=braid_generator_ins_outs(R_op,outs,gen_position=1, total_dimension=3,input_dim=input_shape)
-    
-    
+    outs_side1_equation_1=braid_generator_ins_outs(R_op,outs,gen_position=1, total_dimension=3,input_dim=input_shape)    
 
     #R_3 second side
 
@@ -95,9 +90,7 @@ def braid_group_rep_net(R_op,R_op_inv,input_shape=1):
     
     outs_side2_equation_1=braid_generator_ins_outs(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape)
         
-    
-    
-    
+ 
     # R_2 first side
 
     conc=Concatenate(name="conc_input")([input_tensor_1,input_tensor_2]) 
