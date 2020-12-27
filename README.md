@@ -46,6 +46,6 @@ Finally, we utilize AIDN to obtain new knot theory invariants using the Reshetik
 ```ruby
 main_knot_invariants.py
 ```
-Some of the networks we tested are also provided in the repo.
+Some of the networks' weights are provided in the repo.
 
 The code is tested on Python 3.7 and tensorflow 1.14.0.
