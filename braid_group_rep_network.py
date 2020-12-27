@@ -54,21 +54,31 @@ def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, to
 def braid_group_rep_net(R_op,R_op_inv,input_shape=1):
 
     """
+    Purpose
+    -------
     
-    R_op : a network R^n->R^n represent a crossing element in braid group.
+        This is an axiluray network that is trained to force the relations on the input generators.
+    
+        The network returns the sides of the relations of this algebraic structure.
 
-    R_op_inv : a network R^n->R^n represent the inverse crossing element in braid group.
+
+    Parameters
+    ----------
     
-    input_shape : dimension of the rep.
+        R_op : A Keras model R^n->R^n represent a crossing element in braid group.
+
+        R_op_inv : A Keras model R^n->R^n represent the inverse crossing element in braid group.
     
-    purpose : this is an axiluray network that is trained to force the relations on the input generators.
+        input_shape : dimension of the rep.
     
-    the network returns the sides of the relations of this algebraic structure.
+    Returns
+    -------
+    
+        Keras model, an auxiliary network used to fornc the relations on the generators of the braid group     
     
     """        
     
-    input_tensor_1=Input(shape=(input_shape,))
-        
+    input_tensor_1=Input(shape=(input_shape,))      
     input_tensor_2=Input(shape=(input_shape,))   
     input_tensor_3=Input(shape=(input_shape,)) 
 

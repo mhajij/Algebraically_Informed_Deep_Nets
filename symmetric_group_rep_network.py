@@ -54,20 +54,23 @@ def symmetric_generator_ins_outs(braid_generator_network, inputs, gen_position=2
 def symmetric_group_rep_net(R_op,input_shape=1):
         
     """  
-    R_op : a network R^n->R^n represent a transposition element in symmetric group.
+    Purpose:
+    --------    
+        This is an auxiliary network that is trained to force the relations on the input generators.
+        The network returns the sides of the relations of this algebraic structure.
+    Parameters:
+    -----------    
+        R_op : a Keras model R^n->R^n represent a transposition element in symmetric group.
     
-    input_shape : dimension of the rep.
-    
-    purpose : this is an axiluray network that is trained to force the relations on the input generators.
-    
-    the network returns the sides of the relations of this algebraic structure.
+        input_shape : dimension of the rep.
+    Returns:
+    --------
+        Keras model, an auxiliary network used to fornc the relations on the generator of the symmetric group     
     
     """
     
-    input_tensor_1=Input(shape=(input_shape,))
-        
-    input_tensor_2=Input(shape=(input_shape,)) 
-    
+    input_tensor_1=Input(shape=(input_shape,))      
+    input_tensor_2=Input(shape=(input_shape,))   
     input_tensor_3=Input(shape=(input_shape,)) 
 
 
@@ -78,8 +81,7 @@ def symmetric_group_rep_net(R_op,input_shape=1):
     outs=symmetric_generator_ins_outs(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape) 
     
     outs_side1_equation_1=symmetric_generator_ins_outs(R_op,outs,gen_position=1, total_dimension=3,input_dim=input_shape)
-    
-    
+       
 
     #R_3 second side
 
