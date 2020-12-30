@@ -19,7 +19,50 @@ import os
 os.system('cls')
 
 
-def symmetric_generator_ins_outs(braid_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
+def symmetric_generator_ins_outs(symmetric_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
+
+    
+    """
+    purpose:
+        
+        From the paper: the presentation of the TL algebra is given by :
+        TL_m=< U1,...,U_{m-1} | U_i*U_{i-1}*U_i=U_i, U_i*U_{i+1}*U_i=U_i ,U_i^2=\delta*U_i, UiUj = UjUi > 
+         
+        where 
+         
+        Ui=id^{i-1} X U X id^{m-i+1}, and U is a the two hooks shape curve in the TL generator Ui.
+         
+        hence it is enough to train Ugen for the entire rep of the TL algebra
+             
+        
+        this function defines a network f_{Ui}:R^n->R^n and for a subset of the domain (inputs), it returns f_{Ui}(input) 
+        
+
+    
+    input:
+    -----    
+        Ugen : Keras model R^n->R^n, used to define the generator in the TL algebra
+        
+               Ui=id^{i-1} X Ugen X id^{m-i+1} 
+               
+        inputs: input tensor
+        
+        gen_position: Integer,  this is the index "i" in Ui
+        
+        total_dimension : Integer, this is the index m in TL_{m}
+        
+        input_dim: Integer, this is the dimension n on which the function Ugen : network R^n->R^n is defined. 
+        
+    returns:
+    --------
+        
+    
+        f_{Ui}(inputs)
+        
+        where f_{Ui}=id^{i-1} X Ugen X id^{m-i+1}
+        
+
+    """
     
 
     con_list=[]
@@ -28,7 +71,7 @@ def symmetric_generator_ins_outs(braid_generator_network, inputs, gen_position=2
     
     tensor=Concatenate()(generator_input)
     
-    out_gen=braid_generator_network(tensor)
+    out_gen=symmetric_generator_network(tensor)
         
     
     
@@ -49,7 +92,7 @@ def symmetric_generator_ins_outs(braid_generator_network, inputs, gen_position=2
         
     for i in range(0,total_dimension):
         
-        x_i=cl.slice_layerA(0,2*input_dim,-1,input_dim)(con_final)
+        x_i=cl.SliceLayer(0,2*input_dim,-1,input_dim)(con_final)
         outs.append(x_i)
     
     return outs 
