@@ -3,6 +3,9 @@ Created on Tue Oct 20 22:09:49 2020
 
 @author: Mustafa Hajij
 """
+
+import os
+
 import tensorflow as tf
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
@@ -10,100 +13,18 @@ from tensorflow.keras.layers import Lambda
 from tensorflow.keras.layers import Input, Concatenate
 from tensorflow.python.ops import math_ops
 
-import cus_layers as cl
-
-import os
-
+import utilities as ut
 
 os.system('cls')
-
-
-
-
-
-def tl_generator_ins_outs(Ugen, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
-    
-    
-    """
-    purpose:
-        
-        From the paper: the presentation of the TL algebra is given by :
-        TL_m=< U1,...,U_{m-1} | U_i*U_{i-1}*U_i=U_i, U_i*U_{i+1}*U_i=U_i ,U_i^2=\delta*U_i, UiUj = UjUi > 
-         
-        where 
-         
-        Ui=id^{i-1} X U X id^{m-i+1}, and U is a the two hooks shape curve in the TL generator Ui.
-         
-        hence it is enough to train Ugen for the entire rep of the TL algebra
-             
-        
-        this function defines a network f_{Ui}:R^n->R^n and for a subset of the domain (inputs), it returns f_{Ui}(input) 
-        
-
-    
-    input:
-    -----    
-        Ugen : Keras model R^n->R^n, used to define the generator in the TL algebra
-        
-               Ui=id^{i-1} X Ugen X id^{m-i+1} 
-               
-        inputs: input tensor
-        
-        gen_position: Integer,  this is the index "i" in Ui
-        
-        total_dimension : Integer, this is the index m in TL_{m}
-        
-        input_dim: Integer, this is the dimension n on which the function Ugen : network R^n->R^n is defined. 
-        
-    returns:
-    --------
-        
-    
-        f_{Ui}(inputs)
-        
-        where f_{Ui}=id^{i-1} X Ugen X id^{m-i+1}
-        
-
-    """
-
-    con_list=[]
-        
-    generator_input=inputs[gen_position-1:gen_position+1] 
-    
-    tenosor=Concatenate()(generator_input)
-    
-    out_gen=Ugen(tenosor)
-        
-    
-    
-    for i in range(0,gen_position-1):
-        con_list.append(inputs[i])
-    
-    con_list.append(out_gen)
-        
-    for i in range(gen_position+1,total_dimension):        
-        con_list.append(inputs[i])
-                
-            
-    con_final=Concatenate()(con_list)  
-    
-    outs=[]
-        
-    for i in range(0,total_dimension):       
-        x_i=cl.SliceLayer(0,2*input_dim,-1,input_dim)(con_final)
-        outs.append(x_i)
-    
-    return outs 
     
 def tl_algebra_net(Ugen,delta=2,input_dim=2):
         
     """
 
     Purpose
-    --------
-        
+    --------     
     
-        training Ugen to satisfy the relations of the TL algebera.
+        training model Ugen to satisfy the relations of the TL algebera.
         (1) U_i*U_{i-1}*U_i=U_i
         (2) U_i*U_{i+1}*U_i=U_i  
         (3) U_i^2=\delta*U_i
@@ -139,20 +60,20 @@ def tl_algebra_net(Ugen,delta=2,input_dim=2):
     
     # relation : U_i*U_{i-1}*U_i=U_i
     #side1 
-    outs=tl_generator_ins_outs(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=2, total_dimension=3,input_dim=input_dim)   
-    outs=tl_generator_ins_outs(Ugen,outs,gen_position=1, total_dimension=3,input_dim=input_dim)   
-    outs_side1_equation_1=tl_generator_ins_outs(Ugen,outs,gen_position=2, total_dimension=3,input_dim=input_dim)
+    outs=ut.tensor_generator_with_identity(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=2, total_dimension=3,input_dim=input_dim)   
+    outs=ut.tensor_generator_with_identity(Ugen,outs,gen_position=1, total_dimension=3,input_dim=input_dim)   
+    outs_side1_equation_1=ut.tensor_generator_with_identity(Ugen,outs,gen_position=2, total_dimension=3,input_dim=input_dim)
     #side2    
-    outs_side2_equation_1=tl_generator_ins_outs(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=2, total_dimension=3,input_dim=input_dim)
+    outs_side2_equation_1=ut.tensor_generator_with_identity(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=2, total_dimension=3,input_dim=input_dim)
 
 
     # relation : U_i*U_{i+1}*U_i=U_i  
     #side1 
-    outs=tl_generator_ins_outs(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=1, total_dimension=3,input_dim=input_dim)   
-    outs=tl_generator_ins_outs(Ugen,outs,gen_position=2, total_dimension=3,input_dim=input_dim)   
-    outs_side1_equation_2=tl_generator_ins_outs(Ugen,outs,gen_position=1, total_dimension=3,input_dim=input_dim)
+    outs=ut.tensor_generator_with_identity(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=1, total_dimension=3,input_dim=input_dim)   
+    outs=ut.tensor_generator_with_identity(Ugen,outs,gen_position=2, total_dimension=3,input_dim=input_dim)   
+    outs_side1_equation_2=ut.tensor_generator_with_identity(Ugen,outs,gen_position=1, total_dimension=3,input_dim=input_dim)
     #side2
-    outs_side2_equation_2=tl_generator_ins_outs(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=1, total_dimension=3,input_dim=input_dim)
+    outs_side2_equation_2=ut.tensor_generator_with_identity(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=1, total_dimension=3,input_dim=input_dim)
    
     # relation : U_{i}^2=\delta*U_{i} 
     out_gen=Ugen(Concatenate()([input_tensor_1,input_tensor_2]) ) # requires two inputs
