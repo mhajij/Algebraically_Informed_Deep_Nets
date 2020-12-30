@@ -11,43 +11,7 @@ from tensorflow.keras.layers import Input, Concatenate
 from tensorflow.python.ops import math_ops
 import tensorflow as tf
 
-import cus_layers as cl
-
-
-def braid_generator_ins_outs(braid_generator_network, inputs, gen_position=2, total_dimension=3,input_dim=2 ):
-
-    con_list=[]
-        
-    generator_input=inputs[gen_position-1:gen_position+1] 
-    
-    tensor=Concatenate()(generator_input)
-    
-    out_gen=braid_generator_network(tensor)
-        
-    
-    
-    for i in range(0,gen_position-1):
-        con_list.append(inputs[i])
-    
-    con_list.append(out_gen)
-        
-    for i in range(gen_position+1,total_dimension):
-        
-        con_list.append(inputs[i])
-            
-    
-            
-    con_final=Concatenate()(con_list)  
-    
-    outs=[]
-        
-    for i in range(0,total_dimension):
-        
-        x_i=cl.SliceLayer(0,2*input_dim,-1,input_dim)(con_final)
-        outs.append(x_i)
-    
-    return outs 
-
+import utilities as ut
 
 
 def braid_group_rep_net(R_op,R_op_inv,input_shape=1):
@@ -81,20 +45,20 @@ def braid_group_rep_net(R_op,R_op_inv,input_shape=1):
 
     #R_3 first side
 
-    outs=braid_generator_ins_outs(R_op, [input_tensor_1,input_tensor_2,input_tensor_3], gen_position=1, total_dimension=3,input_dim=input_shape )  
+    outs=ut.tensor_generator_with_identity(R_op, [input_tensor_1,input_tensor_2,input_tensor_3], gen_position=1, total_dimension=3,input_dim=input_shape )  
     
-    outs=braid_generator_ins_outs(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape) 
+    outs=ut.tensor_generator_with_identity(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape) 
     
-    outs_side1_equation_1=braid_generator_ins_outs(R_op,outs,gen_position=1, total_dimension=3,input_dim=input_shape)    
+    outs_side1_equation_1=ut.tensor_generator_with_identity(R_op,outs,gen_position=1, total_dimension=3,input_dim=input_shape)    
 
     #R_3 second side
 
 
-    outs=braid_generator_ins_outs(R_op, [input_tensor_1,input_tensor_2,input_tensor_3], gen_position=2, total_dimension=3,input_dim=input_shape )  
+    outs=ut.tensor_generator_with_identity(R_op, [input_tensor_1,input_tensor_2,input_tensor_3], gen_position=2, total_dimension=3,input_dim=input_shape )  
     
-    outs=braid_generator_ins_outs(R_op,outs,gen_position=1, total_dimension=3,input_dim=input_shape)     
+    outs=ut.tensor_generator_with_identity(R_op,outs,gen_position=1, total_dimension=3,input_dim=input_shape)     
     
-    outs_side2_equation_1=braid_generator_ins_outs(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape)
+    outs_side2_equation_1=ut.tensor_generator_with_identity(R_op,outs,gen_position=2, total_dimension=3,input_dim=input_shape)
         
  
     # R_2 first side
@@ -126,6 +90,7 @@ def braid_group_rep_loss(input_dim=1):
     -------
         
         loss for the braid group. When the loss is minimal, the braid group relations are satisfied for the generator R_op.
+   
     Parameters
     ----------    
         input_dim, the dimension of the R_op generator for the braid group.

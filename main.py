@@ -4,14 +4,17 @@ Created on Fri Nov  6 12:01:54 2020
 
 @author: Mustafa Hajij
 """
+
+import numpy as np
+import argparse
+
 import temperley_lieb_algebra_rep_network as tlnet 
 import braid_group_rep_network as bgnet
 import symmetric_group_rep_network as symgnet
 import zxz_group_rep_network as zsnet
 import utilities as ut
 
-import numpy as np
-import argparse
+
 
 def model_string_gen(model_name):
     
