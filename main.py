@@ -41,16 +41,15 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    # testing or training argument
+    # mode : testing or training
 
     parser.add_argument('-m', '--mode',type=str,default='training',required=True,help='Specify if you want to train a network or testing it.')   
 
-    # type of structure, options : TL, braid_group, symmetric_group, ZxZ
+    # type of structure. Options : TL, braid_group, symmetric_group, ZxZ
 
     parser.add_argument('-st', '--structure',type=str,default="TL",required=True,help='Which structure you want to train. Options are : "TL" , "braid_group", "ZxZ_group" and "symmetric_group". Any other option will generate an error.')
-    
-    
-    #type, dim of network arguments : linear, affine, nonlinear. Activation determines the type.
+    #type and of rep. Types are : linear, affine, nonlinear. Activation + bias determine the type.
+    #_____________________________________________________________________________________________
     
     #(1) dim of the rep
     parser.add_argument('-dim', '--generator_dimension',type=int,default=2,help='domain dimension of the gen network.')
@@ -64,24 +63,20 @@ if __name__ == '__main__':
     parser.add_argument('-bias', '--bias',type=str,default=False,required=False, help='Use bias in your network.')
    
     # TL algebra argument : delta.
-    #* determines delta for the TL algebra. Not effective when training a group.
-    
-    
+    #* determines delta for the TL algebra. Not effective when training a group.  
     parser.add_argument('-delta', '--delta',type=float,required=False,default=1,help='delta, the TL parameter.')
-
     #__________________________________________________________
 
-    # training arguments
-    #(1) number of epochs
+    # training arguments:
+    #___________________
     
+    #(1) number of epochs   
     parser.add_argument('-e', '--epoch',type=int,default=2,help='Number of epochs.')
-    
-    #(2) learning rate
-    
+   
+    #(2) learning rate   
     parser.add_argument('-lr', '--learning_rate',type=float,required=False,default=0.002,help='learning rate.')
 
     #(3) batchsize
-
     parser.add_argument('-b', '--batch_size',type=float,required=False,default=2000,help='batch size')
 
     #___________________________________________________________
@@ -118,10 +113,11 @@ if __name__ == '__main__':
         print("generator function : R^"+str(args.generator_dimension) +"-> R^"+str(args.generator_dimension) )      
         Ugen=ut.operator(input_dim=args.generator_dimension
                          ,bias= args.bias
-                         , activation_function=args.network_generator_activation)        
+                         ,activation_function=args.network_generator_activation)        
         M=tlnet.TL_algebra_net(Ugen,delta =args.delta  ,input_dim=dim//2)
         model_name=model_string_gen("TL_algebra_relations_trainer_use_bias=")
         model_name_U_gen=model_string_gen("TL_algebra_generator_use_bias=")     
+        
         data_in=[data1,data2,data3]
         data_out=data1
         
@@ -169,8 +165,8 @@ if __name__ == '__main__':
         model_name=model_string_gen("braid_group_relations_trainer_use_bias=")     
         
         data_in=[data1,data2,data3]
+        data_out=np.hstack([data1,data2]) 
         
-        data_out=np.hstack([data1,data2])       
         if args.mode=='training':
             
             print("choosing the training mode. ")         
@@ -244,7 +240,8 @@ if __name__ == '__main__':
         A_oP,B_oP=ut.get_n_operators(dim=args.generator_dimension
                                      ,activation_function=args.network_generator_activation
                                      ,bias=args.bias
-                                     ,n_of_operators=2 )              
+                                     ,n_of_operators=2 )     
+         
         M=zsnet.ZxZ_group_rep_net(A_oP,B_oP,input_shape=dim)
         
         model_name=model_string_gen("ZxZ_group_relations_trainer_use_bias=")            
