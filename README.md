@@ -9,7 +9,9 @@ More details are available here : https://www.researchgate.net/publication/34656
 
 ## Installation of the repo
 
-After downloading the repo to your local drive, open the repo folder and then create a new conda env using the following command:
+(1) Download the repo to your local drive. 
+
+(2) Create a new conda env using the following command:
 
 ```ruby
 conda create -n <env_name> --file aidn_conda_env.txt
