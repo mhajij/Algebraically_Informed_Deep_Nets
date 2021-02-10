@@ -251,6 +251,8 @@ if __name__ == '__main__':
         data_in=data1
         data_out=data1
 
+
+
         if args.mode=='training':
             
             print("choosing the training mode. ")       
