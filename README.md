@@ -38,9 +38,9 @@ main.py -m training -st group_name -dim 4
 ```
 where group_name is braid_group, ZxZ_group or symmetric_group. Dimension of the disred network should also be specified. Note that the choice of the activation is crucial to determine the type of the representation : linear, affine or non-linear. This argument is optional and it can be customized using --network_generator_activation.
 
-## Using AIDN to obtain TL algebra reps
+## Using AIDN to obtain Temperley-Lieb algebra reps
 
-We have also implemented AIDN to compute representations for the Temperley-lieb Algebras.
+We have also implemented AIDN to compute representations for the Temperley-Lieb Algebras.
 
 To train a rep for the Temperly-Lieb algebra use :
 
