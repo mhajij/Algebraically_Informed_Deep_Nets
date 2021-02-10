@@ -1,4 +1,4 @@
-# Algebraically Informed_Deep Nets (AIDN)
+# Algebraically Informed Deep Nets (AIDN)
 
 ## Introduction
 AIDN is a deep learning algorithm to represent any finitely-presented algebraic object with a set of deep neural networks.
