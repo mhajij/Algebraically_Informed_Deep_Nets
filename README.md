@@ -17,7 +17,7 @@ More details are available here : https://www.researchgate.net/publication/34656
 conda create -n <env_name> --file aidn_conda_env.txt
 ```
 
-## Using AIDN
+## Using AIDN to obtain group reps
 We illusrate AIDN on computing a braid group rep of dimension 2.
 
 To train a braid group representation using AIDN, we start by creating two generator neural networks $f,g :R^2 -> R^2$. To train $f,g$ we create an auxiliary neural network for the relations of the braid group. These relations are constrains that the networks $f$ and $g$ must satisfy. We impose these constrains by setting them to a cost function which is then minimized using SGD.
