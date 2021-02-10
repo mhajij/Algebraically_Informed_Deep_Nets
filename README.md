@@ -63,3 +63,13 @@ main_knot_invariants.py
 Some of the networks' weights are provided in the repo.
 
 The code is tested on Python 3.7 and tensorflow 1.14.0.
+
+## citation
+```ruby
+@article{hajij2020algebraically,
+  title={Algebraically-Informed Deep Networks (AIDN): A Deep Learning Approach to Represent Algebraic Structures},
+  author={Hajij, Mustafa and Zamzmi, Ghada and Dawson, Matthew and Muller, Greg},
+  journal={arXiv preprint arXiv:2012.01141},
+  year={2020}
+}
+```
