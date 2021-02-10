@@ -18,18 +18,19 @@ import utilities as ut
 
 def model_string_gen(model_name):
     
-    name=model_name
-    +str(args.bias)
-    +"_activation="
-    +  str(args.network_generator_activation)
-    +"_"
-    +str(args.generator_dimension)
-    +"_to_"
-    +str(args.generator_dimension)
-    +"_delta="
-    +str(args.delta)+"_.h5"
+    name=[model_name
+    ,str(args.bias)
+    ,"_activation="
+    ,  str(args.network_generator_activation)
+    ,"_"
+    ,str(args.generator_dimension)
+    ,"_to_"
+    ,str(args.generator_dimension)
+    ,"_delta="
+    ,str(args.delta),"_.h5"]
     
-    return name
+    
+    return "".join(name)
     
 weight_folder='weights/'   
  
