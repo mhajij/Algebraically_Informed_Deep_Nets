@@ -7,7 +7,7 @@ AIDN can compute linear and non-linear representations of most finitely-presente
 
 More details are available here : https://www.researchgate.net/publication/346563873_Algebraically-Informed_Deep_Networks_AIDN_A_Deep_Learning_Approach_to_Represent_Algebraic_Structures
 
-## Installation of the repo
+## Installation
 
 (1) Download the repo to your local drive. 
 
@@ -16,6 +16,8 @@ More details are available here : https://www.researchgate.net/publication/34656
 ```ruby
 conda create -n <env_name> --file aidn_conda_env.txt
 ```
+
+# Getting Started
 
 ## Using AIDN to obtain group reps
 We illusrate AIDN on computing a braid group rep of dimension 2.
@@ -64,7 +66,7 @@ Some of the networks' weights are provided in the repo.
 
 The code is tested on Python 3.7 and tensorflow 1.14.0.
 
-## citation
+## Cite
 ```ruby
 @article{hajij2020algebraically,
   title={Algebraically-Informed Deep Networks (AIDN): A Deep Learning Approach to Represent Algebraic Structures},
