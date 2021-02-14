@@ -112,10 +112,10 @@ if __name__ == '__main__':
             
         print("training the TL algebra generator.")
         print("generator function : R^"+str(args.generator_dimension) +"-> R^"+str(args.generator_dimension) )      
-        Ugen=ut.operator(input_dim=args.generator_dimension
+        Ugen=ut.generator(input_dim=args.generator_dimension
                          ,bias= args.bias
                          ,activation_function=args.network_generator_activation)        
-        M=tlnet.TL_algebra_net(Ugen,delta =args.delta  ,input_dim=dim//2)
+        M=tlnet.tl_algebra_net(Ugen,delta =args.delta  ,input_dim=dim//2)
         model_name=model_string_gen("TL_algebra_relations_trainer_use_bias=")
         model_name_U_gen=model_string_gen("TL_algebra_generator_use_bias=")     
         
@@ -128,11 +128,12 @@ if __name__ == '__main__':
             print("choosing the training mode. ")   
             ut.train_net(M,data_in,data_out
                          , weight_folder+model_name
-                         ,tlnet.TL_loss_wrapper(dim//2)
+                         ,tlnet.tl_loss_wrapper(dim//2)
                          ,args.learning_rate
                          ,args.batch_size
                          ,args.epoch)
             print("saving the model.." )    
+            
             Ugen.save(weight_folder+model_name_U_gen) 
             print("model saved.")
 

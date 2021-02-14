@@ -28,6 +28,7 @@ def tl_algebra_net(Ugen,delta=2,input_dim=2):
         (1) U_i*U_{i-1}*U_i=U_i
         (2) U_i*U_{i+1}*U_i=U_i  
         (3) U_i^2=\delta*U_i
+        (4) UiUj = UjUi if |i-j|>1 (this relation is automatially satisfied so we do not include it in the model)
         
          From the paper: the presentation of the TL algebra is given by :
          TL_m=< U1,...,U_{m-1} | U_i*U_{i-1}*U_i=U_i, U_i*U_{i+1}*U_i=U_i ,U_i^2=\delta*U_i, UiUj = UjUi > 
