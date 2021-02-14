@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     # type of structure. Options : TL, braid_group, symmetric_group, ZxZ
 
-    parser.add_argument('-st', '--structure',type=str,default="TL",required=True,help='Which structure you want to train. Options are : "TL" , "braid_group", "ZxZ_group" and "symmetric_group". Any other option will generate an error.')
+    parser.add_argument('-st', '--structure',type=str,default="TL",required=True,help='Which structure you want to train. Options are : "TL_algebra" , "braid_group", "ZxZ_group" and "symmetric_group". Any other option will generate an error.')
     #type and of rep. Types are : linear, affine, nonlinear. Activation + bias determine the type.
     #_____________________________________________________________________________________________
     
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     dim=args.generator_dimension
     d=dim//2
 
-    if dim in [2,4,6] and args.structure in ["TL",'braid_group','symmetric_group']:
+    if dim in [2,4,6] and args.structure in ["TL_algebra",'braid_group','symmetric_group']:
         
         data1=np.load(data_folder+str(d)+'d_data_1.npy')
         data2=np.load(data_folder+str(d)+'d_data_2.npy')
@@ -104,7 +104,7 @@ if __name__ == '__main__':
         raise ValueError("generator dimension " +str(dim) +"is not in the constrained dimensions for this structure: dimension must be in [2,4,6] for the TL,'braid_group','symmetric_group' and between (2,10) for ZxZ_group. ")
 
 
-    if args.structure=='TL':
+    if args.structure=='TL_algebra':
                      
         if args.delta==0:
             
