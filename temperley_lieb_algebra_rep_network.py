@@ -15,8 +15,14 @@ from tensorflow.python.ops import math_ops
 
 import utilities as ut
 
+
+
 os.system('cls')
     
+
+
+
+
 def tl_algebra_net(Ugen,delta=2,input_dim=2):
         
     """
@@ -62,10 +68,11 @@ def tl_algebra_net(Ugen,delta=2,input_dim=2):
     # relation : U_i*U_{i-1}*U_i=U_i
     #side1 
     outs=ut.tensor_generator_with_identity(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=2, total_dimension=3,input_dim=input_dim)   
-    outs=ut.tensor_generator_with_identity(Ugen,outs,gen_position=1, total_dimension=3,input_dim=input_dim)   
+    outs=ut.tensor_generator_with_identity(Ugen,outs,gen_position=1, total_dimension=3,input_dim=input_dim)      
     outs_side1_equation_1=ut.tensor_generator_with_identity(Ugen,outs,gen_position=2, total_dimension=3,input_dim=input_dim)
     #side2    
     outs_side2_equation_1=ut.tensor_generator_with_identity(Ugen,[input_tensor_1,input_tensor_2,input_tensor_3],gen_position=2, total_dimension=3,input_dim=input_dim)
+
 
 
     # relation : U_i*U_{i+1}*U_i=U_i  

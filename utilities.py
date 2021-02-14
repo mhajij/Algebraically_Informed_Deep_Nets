@@ -150,7 +150,8 @@ def tensor_generator_with_identity(generator, inputs, gen_position=2, total_dime
     out_tensors_list=[]
         
     for i in range(0,total_dimension):       
-        x_i=cl.SliceLayer(0,2*input_dim,-1,input_dim)(con_final)
+        x_i=cl.SliceLayer(0,i*input_dim,-1,input_dim)(con_final)
+
         out_tensors_list.append(x_i)
     
     return out_tensors_list 
@@ -199,7 +200,7 @@ def train_net(model,x_data,y_data,model_name,lossfunction,lr,batch_size,epochs):
     
     model.compile(optimizer=keras.optimizers.Adam(lr=lr), loss = lossfunction  )           
     
-    model.fit(x_data, y_data,  batch_size=batch_size, epochs=epochs, shuffle = True,  verbose=1,callbacks=callbacks_list)  
+    model.fit(x_data, y_data,  batch_size=batch_size, epochs=epochs, shuffle = True,  verbose=1,callbacks_list=callbacks_list)  
     
     return 
     
